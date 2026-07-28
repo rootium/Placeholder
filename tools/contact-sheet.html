@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pressd — contact sheet</title>
+<style>
+  body { margin: 0; padding: 20px; background: #14120f; color: #f1ebdd;
+         font: 13px/1.4 system-ui, sans-serif; }
+  h1 { font-size: 15px; margin: 0 0 14px; letter-spacing: .02em; }
+  .row { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-bottom: 8px; }
+  figure { margin: 0; }
+  canvas { width: 100%; display: block; border-radius: 4px; }
+  figcaption { font-size: 10px; color: #a49c8b; padding-top: 4px; text-align: center; }
+</style>
+</head>
+<body>
+<h1>Every style, every sample. Dev tool — open with a local server.</h1>
+<div id="out"></div>
+
+<script type="module">
+import { PRESETS } from '../js/presets.js';
+import { renderPoster } from '../js/render/pipeline.js';
+import { SAMPLES, defaults, adoptPreset } from '../js/state.js';
+
+const out = document.getElementById('out');
+const SIZE = Number(new URLSearchParams(location.search).get('size') || 300);
+
+function loadImage(src) {
+  return new Promise((res, rej) => {
+    const i = new Image();
+    i.onload = () => res(i);
+    i.onerror = rej;
+    i.src = src;
+  });
+}
+
+for (const sample of SAMPLES) {
+  const image = await loadImage(`../${sample.src}`);
+  const row = document.createElement('div');
+  row.className = 'row';
+  for (const preset of PRESETS) {
+    const settings = adoptPreset(defaults(), preset.id);
+    settings.size = 'square';
+    settings.layout = 'bleed';
+    const canvas = renderPoster({ image, preset, settings, text: {}, longEdge: SIZE });
+    const fig = document.createElement('figure');
+    const c = document.createElement('canvas');
+    c.width = canvas.width;
+    c.height = canvas.height;
+    c.getContext('2d').drawImage(canvas, 0, 0);
+    const cap = document.createElement('figcaption');
+    cap.textContent = preset.label;
+    fig.append(c, cap);
+    row.append(fig);
+  }
+  out.append(row);
+  await new Promise((r) => setTimeout(r, 0));
+}
+document.body.dataset.done = '1';
+</script>
+</body>
+</html>

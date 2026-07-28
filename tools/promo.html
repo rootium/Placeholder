@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pressd — promo art</title>
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: #14120f;
+    color: #f1ebdd;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+    background-image:
+      radial-gradient(900px 600px at 80% -10%, rgba(255,90,60,.16), transparent 60%),
+      radial-gradient(800px 500px at 0% 110%, rgba(91,141,214,.14), transparent 60%);
+  }
+  .og { width: 1200px; height: 630px; display: grid; grid-template-columns: 1fr 1fr;
+        align-items: center; padding: 0 0 0 68px; gap: 10px; }
+  .words h1 { font-size: 74px; letter-spacing: -.035em; font-weight: 800; line-height: 1; }
+  .words p.tag { font-size: 30px; color: #f1ebdd; margin-top: 14px; font-weight: 500; }
+  .words p.sub { font-size: 18px; color: #a49c8b; margin-top: 20px; line-height: 1.5; }
+  .mark { display: flex; align-items: center; gap: 14px; }
+  .pill { display: inline-block; margin-top: 26px; font-size: 15px; color: #14120f;
+          background: #ff5a3c; padding: 10px 20px; border-radius: 999px; font-weight: 700; }
+  .fan { position: relative; height: 100%; }
+  .fan canvas { position: absolute; border-radius: 3px;
+                box-shadow: 0 30px 70px rgba(0,0,0,.6); }
+
+  .strip { width: 1600px; height: 560px; display: flex; align-items: center;
+           justify-content: center; gap: 26px; padding: 0 40px; }
+  .strip figure { text-align: center; }
+  .strip canvas { border-radius: 3px; box-shadow: 0 22px 50px rgba(0,0,0,.55); display: block; }
+  .strip figcaption { margin-top: 14px; font-size: 14px; color: #a49c8b;
+                      font-family: ui-monospace, Menlo, monospace;
+                      letter-spacing: .14em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="module">
+import { PRESET_BY_ID } from '../js/presets.js';
+import { renderPoster } from '../js/render/pipeline.js';
+import { defaults, adoptPreset } from '../js/state.js';
+
+const mode = new URLSearchParams(location.search).get('mode') || 'og';
+const root = document.getElementById('root');
+
+const loadImage = (src) => new Promise((res, rej) => {
+  const i = new Image();
+  i.onload = () => res(i);
+  i.onerror = rej;
+  i.src = src;
+});
+
+function poster({ image, presetId, layout, size, text, longEdge }) {
+  const preset = PRESET_BY_ID[presetId];
+  const settings = adoptPreset(defaults(), presetId);
+  settings.layout = layout;
+  settings.size = size;
+  const canvas = renderPoster({ image, preset, settings, text, longEdge });
+  const c = document.createElement('canvas');
+  c.width = canvas.width;
+  c.height = canvas.height;
+  c.getContext('2d').drawImage(canvas, 0, 0);
+  return c;
+}
+
+const still = await loadImage('../assets/samples/still-life.png');
+const ridge = await loadImage('../assets/samples/ridge.png');
+const waves = await loadImage('../assets/samples/waves.png');
+const city = await loadImage('../assets/samples/city.png');
+
+if (mode === 'og') {
+  root.innerHTML = `
+    <div class="og">
+      <div class="words">
+        <div class="mark"><img src="../assets/logo.svg" width="52" height="52" alt=""><h1>Pressd</h1></div>
+        <p class="tag">Drop a photo. Get art.</p>
+        <p class="sub">Risograph, halftone, screenprint, cyanotype.<br>Free, no sign-up, and your photo never leaves your device.</p>
+        <span class="pill">rootium.github.io/placeholder</span>
+      </div>
+      <div class="fan" id="fan"></div>
+    </div>`;
+  const fan = document.getElementById('fan');
+  const specs = [
+    { image: waves, presetId: 'cyanotype', layout: 'museum', text: { title: 'Long Swell', subtitle: 'Series 03' },
+      css: 'left:14px; top:168px; transform:rotate(-7deg); width:196px;' },
+    { image: still, presetId: 'riso-sun', layout: 'zine', text: { title: 'Three Objects' },
+      css: 'left:172px; top:112px; transform:rotate(2deg); width:214px; z-index:2;' },
+    { image: ridge, presetId: 'riso-pink', layout: 'gallery', text: { title: 'Northern Ridge', subtitle: 'Series 01' },
+      css: 'left:340px; top:160px; transform:rotate(8deg); width:198px;' },
+  ];
+  for (const s of specs) {
+    const c = poster({ ...s, size: 'portrait', longEdge: 900 });
+    c.style.cssText = s.css;
+    fan.append(c);
+  }
+} else {
+  const specs = [
+    { image: ridge, presetId: 'riso-pink', layout: 'gallery', label: 'Riso Pink',
+      text: { title: 'Northern Ridge', subtitle: 'Series 01' } },
+    { image: still, presetId: 'newsprint', layout: 'swiss', label: 'Newsprint',
+      text: { title: 'Three Objects', subtitle: 'Series 04', caption: 'Edition of 50' } },
+    { image: city, presetId: 'blueprint', layout: 'index', label: 'Blueprint',
+      text: { title: 'Nine Til Late', subtitle: 'Series 02' } },
+    { image: waves, presetId: 'screenprint', layout: 'museum', label: 'Screenprint',
+      text: { title: 'Long Swell', subtitle: 'Series 03' } },
+    { image: still, presetId: 'engraving', layout: 'zine', label: 'Engraving',
+      text: { title: 'Three Objects' } },
+  ];
+  const strip = document.createElement('div');
+  strip.className = 'strip';
+  for (const s of specs) {
+    const fig = document.createElement('figure');
+    const c = poster({ ...s, size: 'portrait', longEdge: 880 });
+    c.style.width = '250px';
+    const cap = document.createElement('figcaption');
+    cap.textContent = s.label;
+    fig.append(c, cap);
+    strip.append(fig);
+  }
+  root.append(strip);
+}
+document.body.dataset.done = '1';
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pressd — turn any photo into a print</title>
+<meta name="description" content="Drop a photo and get a poster that looks like it came off a printing press. Risograph, halftone, screenprint, cyanotype and more. Free, no sign-up, and your photo never leaves your device.">
+<meta name="theme-color" content="#14120f">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/favicon.svg">
+<link rel="canonical" href="https://rootium.github.io/placeholder/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pressd — turn any photo into a print">
+<meta property="og:description" content="Drop a photo. Get art. Risograph, halftone, screenprint and more, straight in your browser.">
+<meta property="og:url" content="https://rootium.github.io/placeholder/">
+<meta property="og:image" content="https://rootium.github.io/placeholder/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pressd — turn any photo into a print">
+<meta name="twitter:description" content="Drop a photo. Get art. Free, no sign-up, works offline.">
+<meta name="twitter:image" content="https://rootium.github.io/placeholder/assets/og.png">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a class="skip" href="#stage">Skip to the poster</a>
+
+<header class="topbar">
+  <div class="brand">
+    <img src="assets/logo.svg" alt="" width="30" height="30">
+    <span class="brand-name">Pressd</span>
+    <span class="brand-tag">Drop a photo. Get art.</span>
+  </div>
+  <div class="topbar-actions">
+    <button type="button" class="btn ghost" id="btn-shuffle" title="Try a random look">
+      <span aria-hidden="true">⚄</span><span class="btn-label">Surprise me</span>
+    </button>
+    <a class="btn ghost hide-sm" href="https://github.com/rootium/placeholder" target="_blank" rel="noopener">GitHub</a>
+    <button type="button" class="btn primary" id="btn-download">Download</button>
+  </div>
+</header>
+
+<main class="workspace">
+
+  <section class="stage" id="stage" aria-label="Your poster">
+    <div class="stage-frame">
+      <canvas id="poster" aria-label="Poster preview"></canvas>
+      <div class="stage-badge" id="stage-badge">Riso Pink</div>
+    </div>
+    <p class="stage-note" id="stage-note">Your photo stays on your device. Nothing is uploaded.</p>
+  </section>
+
+  <aside class="panel" aria-label="Controls">
+
+    <section class="card">
+      <h2><span class="step">1</span> Your photo</h2>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a photo">
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 16V4M12 4 7 9M12 4l5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+        </svg>
+        <strong>Drop a photo here</strong>
+        <span>or click to pick one · you can paste too</span>
+      </div>
+      <input type="file" id="file" accept="image/*" hidden>
+      <p class="label">Or start with one of these</p>
+      <div class="samples" id="samples"></div>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">2</span> Pick a look</h2>
+      <div class="swatches" id="swatches" role="radiogroup" aria-label="Print style"></div>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">3</span> Add words <small>optional</small></h2>
+      <label class="field">
+        <span>Title</span>
+        <input type="text" id="txt-title" maxlength="60" placeholder="Northern Ridge">
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span>Small line</span>
+          <input type="text" id="txt-subtitle" maxlength="40" placeholder="Series 01">
+        </label>
+        <label class="field">
+          <span>Corner note</span>
+          <input type="text" id="txt-caption" maxlength="40" placeholder="Edition of 50">
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">4</span> Shape</h2>
+      <p class="label">Layout</p>
+      <div class="chips" id="layouts" role="radiogroup" aria-label="Layout"></div>
+      <p class="label">Paper size</p>
+      <div class="chips" id="sizes" role="radiogroup" aria-label="Paper size"></div>
+    </section>
+
+    <details class="card accordion" id="tune">
+      <summary><h2>Fine tune</h2><span class="chev" aria-hidden="true">▾</span></summary>
+      <div class="accordion-body">
+        <div class="sliders" id="sliders"></div>
+
+        <p class="label">Ink colours</p>
+        <div class="inks" id="inks"></div>
+
+        <label class="switch">
+          <input type="checkbox" id="opt-deckle">
+          <span>Torn paper edge</span>
+        </label>
+        <button type="button" class="btn ghost wide" id="btn-reset">Reset this look</button>
+      </div>
+    </details>
+
+    <section class="card">
+      <h2><span class="step">5</span> Take it home</h2>
+      <div class="field-row">
+        <label class="field">
+          <span>Quality</span>
+          <select id="export-size">
+            <option value="1080">Web — 1080px</option>
+            <option value="2000" selected>Big — 2000px</option>
+            <option value="3000">Print — 3000px</option>
+            <option value="4000">Huge — 4000px</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>File</span>
+          <select id="export-format">
+            <option value="image/png" selected>PNG</option>
+            <option value="image/jpeg">JPG</option>
+          </select>
+        </label>
+      </div>
+      <button type="button" class="btn primary wide" id="btn-download-2">Download poster</button>
+      <p class="fineprint">Free. No account. Yours to print, post or sell.</p>
+    </section>
+
+    <footer class="foot">
+      <p><strong>Pressd</strong> — made for people who like paper.</p>
+      <p>
+        <a href="https://github.com/rootium/placeholder">Source</a> ·
+        <a href="https://github.com/rootium/placeholder/blob/main/docs/PLAN.md">The plan</a> ·
+        <a href="https://github.com/rootium/placeholder/issues">Report a bug</a>
+      </p>
+    </footer>
+
+  </aside>
+</main>
+
+<div class="busy" id="busy" hidden>
+  <div class="busy-box">
+    <div class="press"><span></span><span></span><span></span></div>
+    <p id="busy-text">Printing…</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
