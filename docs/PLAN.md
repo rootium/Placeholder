@@ -77,14 +77,19 @@ early.
 ## Stage 2 — Ship (done)
 
 - [x] Static site, no build step
-- [x] GitHub Pages via Actions
+- [x] GitHub Pages workflow, deploys the folder as-is on every push
 - [x] Open Graph and Twitter cards, so links unfurl with real artwork
 - [x] Favicon, meta description, canonical URL
 - [x] Responsive down to 390px
 - [x] Keyboard reachable, `prefers-reduced-motion` respected
-- [x] Tagged `v1.0.0`
+- [x] Released as v1.0.0
 
-**Live at:** https://rootium.github.io/placeholder/
+**One manual step left before it's live.** Pages has to be switched on by hand
+the first time — *Settings → Pages → Source: GitHub Actions* — because a
+workflow token isn't allowed to create the Pages site. Once that's done, re-run
+the workflow and it deploys on its own from then on.
+
+**Will be live at:** https://rootium.github.io/Placeholder/
 
 ---
 

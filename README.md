@@ -10,7 +10,7 @@ Turn any picture into something that looks like it came off a printing press.
 Risograph, halftone, screenprint, cyanotype. Free, no sign-up, and your photo
 never leaves your computer.
 
-### [→ Open Pressd](https://rootium.github.io/placeholder/)
+### [→ Open Pressd](https://rootium.github.io/Placeholder/)
 
 <img src="assets/gallery.png" alt="Five posters made with Pressd: riso, newsprint, blueprint, screenprint and engraving styles">
 
@@ -91,13 +91,26 @@ No build step, no dependencies, no npm install. It's plain HTML, CSS and
 JavaScript modules.
 
 ```bash
-git clone https://github.com/rootium/placeholder.git
-cd placeholder
+git clone https://github.com/rootium/Placeholder.git
+cd Placeholder
 python3 -m http.server 8000
 ```
 
 Then open <http://localhost:8000>. It needs a server rather than opening the
 file directly, because ES modules won't load over `file://`.
+
+### Deploying
+
+`.github/workflows/pages.yml` publishes the whole folder to GitHub Pages on
+every push. There's no build step — it uploads the repository as-is.
+
+It needs Pages switched on once, by hand, before the first run will go green:
+
+> **Settings → Pages → Build and deployment → Source: GitHub Actions**
+
+A workflow token isn't allowed to create the Pages site itself, so this one
+click can't be automated. After that, re-run the workflow (Actions → Deploy to
+GitHub Pages → Re-run jobs) and every push deploys on its own from then on.
 
 ### What's in here
 
