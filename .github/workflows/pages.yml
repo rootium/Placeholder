@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -17,7 +17,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Route one: serve the site from a gh-pages branch.
+  # GitHub turns Pages on by itself when a public repo gains this branch, so
+  # this route needs nobody to touch repository settings.
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # No build step. It is a folder of files, which is the whole point —
+      # so the deploy branch is just this commit under another name.
+      - name: Publish to gh-pages
+        run: git push --force origin HEAD:gh-pages
+
+  # Route two: the newer artifact-based deploy. This one stays broken until
+  # somebody sets Settings -> Pages -> Source to "GitHub Actions", because a
+  # workflow token is not allowed to create the Pages site on its own. It is
+  # marked continue-on-error so a repo without that setting still goes green
+  # on the strength of the mirror above.
   deploy:
+    needs: mirror
+    continue-on-error: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -25,8 +45,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # No build step. It is a folder of files, which is the whole point.
-      # enablement turns the Pages site on the first time this runs.
       - uses: actions/configure-pages@v5
         with:
           enablement: true
