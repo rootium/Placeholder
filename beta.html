@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pressd Beta — one step at a time</title>
+<meta name="description" content="The step-by-step version of Pressd. Preview on top, one choice at a time, next and back at the bottom.">
+<meta name="theme-color" content="#14120f">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/beta.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="bar">
+    <a class="back-link" href="index.html" title="Back to the full version">‹</a>
+    <div class="bar-mid">
+      <strong>Pressd</strong>
+      <span class="beta">beta</span>
+    </div>
+    <button type="button" class="icon-btn" id="btn-shuffle" title="Surprise me">⚄</button>
+  </header>
+
+  <!-- 1. The preview never moves. -->
+  <section class="preview" id="preview">
+    <canvas id="poster"></canvas>
+  </section>
+
+  <div class="progress" aria-hidden="true"><i id="progress-fill"></i></div>
+
+  <!-- 2. The choices for this step. -->
+  <main class="step" id="step">
+
+    <section class="pane" data-step="photo" hidden>
+      <h2>Pick a photo</h2>
+      <button type="button" class="drop" id="drop">
+        <span class="drop-icon">＋</span>
+        <strong>Use my own photo</strong>
+        <small>tap to choose · or paste one</small>
+      </button>
+      <input type="file" id="file" accept="image/*" hidden>
+      <p class="or">or start with one of these</p>
+      <div class="grid-4" id="samples"></div>
+    </section>
+
+    <section class="pane" data-step="look" hidden>
+      <h2>Pick a look</h2>
+      <p class="hint" id="look-hint">Every one is rendered on your photo.</p>
+      <div class="grid-2" id="swatches" role="radiogroup" aria-label="Print style"></div>
+    </section>
+
+    <section class="pane" data-step="shape" hidden>
+      <h2>Pick a shape</h2>
+      <p class="sub">Layout</p>
+      <div class="chips" id="layouts" role="radiogroup" aria-label="Layout"></div>
+      <p class="sub">Paper size</p>
+      <div class="chips" id="sizes" role="radiogroup" aria-label="Paper size"></div>
+    </section>
+
+    <section class="pane" data-step="words" hidden>
+      <h2>Add words</h2>
+      <p class="hint">All optional. Leave them blank for just the picture.</p>
+      <label class="field">
+        <span>Title</span>
+        <input type="text" id="txt-title" maxlength="60" placeholder="Northern Ridge">
+      </label>
+      <label class="field">
+        <span>Small line</span>
+        <input type="text" id="txt-subtitle" maxlength="40" placeholder="Series 01">
+      </label>
+      <label class="field">
+        <span>Corner note</span>
+        <input type="text" id="txt-caption" maxlength="40" placeholder="Edition of 50">
+      </label>
+    </section>
+
+    <section class="pane" data-step="save" hidden>
+      <h2>Take it home</h2>
+      <p class="sub">Size</p>
+      <div class="chips" id="qualities" role="radiogroup" aria-label="Quality"></div>
+      <p class="sub">File</p>
+      <div class="chips" id="formats" role="radiogroup" aria-label="File type"></div>
+      <button type="button" class="big-btn" id="btn-download">Download poster</button>
+      <p class="hint center">Free. No account. Your photo never left this phone.</p>
+    </section>
+
+  </main>
+
+  <!-- 3. Back and next, always in the same place. -->
+  <nav class="nav">
+    <button type="button" class="nav-btn" id="btn-prev">Back</button>
+    <span class="counter" id="counter">1 / 5</span>
+    <button type="button" class="nav-btn primary" id="btn-next">Next</button>
+  </nav>
+
+</div>
+
+<div class="busy" id="busy" hidden>
+  <div class="press"><span></span><span></span><span></span></div>
+  <p id="busy-text">Printing…</p>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="js/beta.js"></script>
+</body>
+</html>
