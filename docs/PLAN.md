@@ -84,12 +84,24 @@ early.
 - [x] Keyboard reachable, `prefers-reduced-motion` respected
 - [x] Released as v1.0.0
 
-**One manual step left before it's live.** Pages has to be switched on by hand
-the first time — *Settings → Pages → Source: GitHub Actions* — because a
-workflow token isn't allowed to create the Pages site. Once that's done, re-run
-the workflow and it deploys on its own from then on.
+**Live at:** https://rootium.github.io/Placeholder/
 
-**Will be live at:** https://rootium.github.io/Placeholder/
+### Getting it published, which took two goes
+
+The artifact-based Pages deploy can't bootstrap itself. `configure-pages`
+failed with *Resource not accessible by integration* — a workflow token may not
+create a Pages site, and the setting that would create one lives in repository
+settings, which the GitHub mobile app doesn't expose at all. So on a phone
+there was no way to press the button.
+
+The way around it is the older route: a public repo that gains a `gh-pages`
+branch gets Pages enabled for it automatically, no settings required. The
+workflow now force-pushes each commit to `gh-pages` and keeps the artifact job
+alongside it as `continue-on-error`, so the run goes green either way and the
+newer route takes over by itself if the source is ever switched to Actions.
+
+Worth remembering: **when a deploy needs a permission you don't have, look for
+the route that needs no permission at all.**
 
 ---
 

@@ -101,16 +101,20 @@ file directly, because ES modules won't load over `file://`.
 
 ### Deploying
 
-`.github/workflows/pages.yml` publishes the whole folder to GitHub Pages on
-every push. There's no build step — it uploads the repository as-is.
+`.github/workflows/pages.yml` publishes the whole folder on every push. There's
+no build step — the site is the repository.
 
-It needs Pages switched on once, by hand, before the first run will go green:
+It deploys two ways, on purpose:
 
-> **Settings → Pages → Build and deployment → Source: GitHub Actions**
-
-A workflow token isn't allowed to create the Pages site itself, so this one
-click can't be automated. After that, re-run the workflow (Actions → Deploy to
-GitHub Pages → Re-run jobs) and every push deploys on its own from then on.
+1. **A `gh-pages` branch.** The workflow force-pushes each commit there. A
+   public repo that gains a `gh-pages` branch gets Pages switched on for it
+   automatically, so this route needs nobody to open repository settings. This
+   is the one currently serving the site.
+2. **The Actions artifact.** The newer route, kept alongside. It can't start a
+   Pages site from scratch — a workflow token isn't allowed to create one, and
+   only a repo admin can flip *Settings → Pages → Source: GitHub Actions*. It's
+   marked `continue-on-error`, so the run still goes green without it, and it
+   takes over cleanly if that setting is ever switched on.
 
 ### What's in here
 
